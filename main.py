@@ -62,13 +62,15 @@ async def asl_help(ctx):
     page2.add_field(name="!ai_translations", value="Why we typically don't promote AI Translation apps", inline=False)
 
     embeds = [page1, page2]
+    # Send embeds to be paginated in discord.
     await Paginator.Simple().start(ctx, pages=embeds)
     pass
 
+# When called, search web pages for videos or information about the word they want to know.
 @bot.command(name="sign_help")
 async def sign_help(ctx, word):
-    # search LifePrint, HandSpeak, SigningSavvy, etc. for word
-    await ctx.send("Searching the web for "+word)
+    #await ctx.send("Searching the web for "+word)
+    #search pages
     search_results = perform_web_search(query=word)
     await ctx.send(search_results)
 
