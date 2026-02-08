@@ -1,0 +1,11 @@
+!how-sign
+!sign-meaning
+!parameters
+!fluency-level
+!deaf-resources
+!nd-resources
+!deaf-history
+!practice-rooms #explains practice rooms and what to do in them
+!practice-games
+!ai-translations
+!
