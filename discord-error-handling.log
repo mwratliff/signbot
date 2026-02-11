@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 92, in sign
+    results = web_search.search_all_providers(word)
+AttributeError: module 'web_search' has no attribute 'search_all_providers'
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 50, in feedback
+    fb_channel = discord.utils.get(channel=target_guild.channels, name="feedback")
+TypeError: get() missing 1 required positional argument: 'iterable'
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 50, in feedback
+    fb_channel = discord.utils.get(channel=target_guild.channels, name="feedback")
+AttributeError: 'NoneType' object has no attribute 'channels'
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 49, in feedback
+    target_guild = discord.utils.get(ctx.guild, id=bot_guild_id)
+  File "E:\discord-stuff\sign-bot\.venv\lib\site-packages\discord\utils.py", line 599, in get
+    else _get(iterable, **attrs)  # type: ignore
+  File "E:\discord-stuff\sign-bot\.venv\lib\site-packages\discord\utils.py", line 498, in _get
+    return next((elem for elem in iterable if pred(elem) == v), None)
+TypeError: 'Guild' object is not iterable
+

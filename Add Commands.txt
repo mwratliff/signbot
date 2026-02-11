@@ -1,6 +1,6 @@
-!how-sign
+/\!how-sign
 !sign-meaning
-!parameters
+\/!parameters
 !fluency-level
 !deaf-resources
 !nd-resources
@@ -8,4 +8,5 @@
 !practice-rooms #explains practice rooms and what to do in them
 !practice-games
 !ai-translations
-!
+!feedback
+!asl-help
