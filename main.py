@@ -44,4 +44,12 @@ async def main():
 if __name__ == "__main__":
     import asyncio
 
-    asyncio.run(main())
+    # Use selector policy on Windows for cleaner shutdown behavior.
+    if os.name == "nt":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+    try:
+        asyncio.run(main())
+    # Exit cleanly when the process is interrupted (Ctrl+C).
+    except KeyboardInterrupt:
+        print("Bot shutdown requested. Exiting cleanly.")
