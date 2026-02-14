@@ -1,0 +1,223 @@
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 147, in feedback
+    fb_channel = discord.utils.get(guild=target_guild.channels, name="feedback")
+TypeError: get() missing 1 required positional argument: 'iterable'
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 147, in feedback
+    fb_channel = discord.utils.get(guild=target_guild.channels, name="feedback")
+TypeError: get() missing 1 required positional argument: 'iterable'
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 164, in feedback
+    threads = await channel.fetch_active_threads()
+AttributeError: 'TextChannel' object has no attribute 'fetch_active_threads'
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 721, in lookup_or_fetch_word
+    results_dict = asyncio.run(search_all_providers(normalized))
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 33, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 344, in sign
+    results, added = web_search.lookup_or_fetch_word(word)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 725, in lookup_or_fetch_word
+    results_dict = asyncio.get_event_loop().run_until_complete(
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 617, in run_until_complete
+    self._check_running()
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 577, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 738, in lookup_or_fetch_word
+    results_dict = asyncio.run(search_all_providers(normalized))
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 33, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 344, in sign
+    results, added = web_search.lookup_or_fetch_word(word)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 742, in lookup_or_fetch_word
+    results_dict = asyncio.get_event_loop().run_until_complete(
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 617, in run_until_complete
+    self._check_running()
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 577, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 738, in lookup_or_fetch_word
+    results_dict = asyncio.run(search_all_providers(normalized))
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 33, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 344, in sign
+    results, added = web_search.lookup_or_fetch_word(word)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 742, in lookup_or_fetch_word
+    results_dict = asyncio.get_event_loop().run_until_complete(
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 617, in run_until_complete
+    self._check_running()
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 577, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 738, in lookup_or_fetch_word
+    results_dict = asyncio.run(search_all_providers(normalized))
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 33, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 344, in sign
+    results, added = web_search.lookup_or_fetch_word(word)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 742, in lookup_or_fetch_word
+    results_dict = asyncio.get_event_loop().run_until_complete(
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 617, in run_until_complete
+    self._check_running()
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 577, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 738, in lookup_or_fetch_word
+    results_dict = asyncio.run(search_all_providers(normalized))
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 33, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 344, in sign
+    results, added = web_search.lookup_or_fetch_word(word)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 742, in lookup_or_fetch_word
+    results_dict = asyncio.get_event_loop().run_until_complete(
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 617, in run_until_complete
+    self._check_running()
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 577, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 738, in lookup_or_fetch_word
+    results_dict = asyncio.run(search_all_providers(normalized))
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 33, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 344, in sign
+    results, added = web_search.lookup_or_fetch_word(word)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 742, in lookup_or_fetch_word
+    results_dict = asyncio.get_event_loop().run_until_complete(
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 617, in run_until_complete
+    self._check_running()
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 577, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 738, in lookup_or_fetch_word
+    results_dict = asyncio.run(search_all_providers(normalized))
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 33, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 344, in sign
+    results, added = web_search.lookup_or_fetch_word(word)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 742, in lookup_or_fetch_word
+    results_dict = asyncio.get_event_loop().run_until_complete(
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 617, in run_until_complete
+    self._check_running()
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 577, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 738, in lookup_or_fetch_word
+    results_dict = asyncio.run(search_all_providers(normalized))
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\runners.py", line 33, in run
+    raise RuntimeError(
+RuntimeError: asyncio.run() cannot be called from a running event loop
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 344, in sign
+    results, added = await web_search.lookup_or_fetch_word(word)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 742, in lookup_or_fetch_word
+    results_dict = asyncio.get_event_loop().run_until_complete(
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 617, in run_until_complete
+    self._check_running()
+  File "C:\Users\area5\AppData\Local\Programs\Python\Python310\lib\asyncio\base_events.py", line 577, in _check_running
+    raise RuntimeError('This event loop is already running')
+RuntimeError: This event loop is already running
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 470, in sign
+    results, added = await web_search.lookup_or_fetch_word(word)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 667, in lookup_or_fetch_word
+    results_dict = await search_all_providers(normalized)
+  File "C:\Users\area5\PycharmProjects\signbot\web_search.py", line 641, in search_all_providers
+    search_spreadthesign(session, q),
+NameError: name 'search_spreadthesign' is not defined
+
+NoneType: None
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 507, in sign
+    embed.add_field(
+TypeError: Embed.add_field() missing 1 required keyword-only argument: 'name'
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 506, in sign
+    embed.add_field(
+TypeError: Embed.add_field() missing 1 required keyword-only argument: 'name'
+
+Traceback (most recent call last):
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 516, in sign
+    value=self._format_result_line(entry, fallback_word=word.strip().lower()),
+  File "C:\Users\area5\PycharmProjects\signbot\commands.py", line 434, in _format_result_line
+    provider = self.PROVIDER_DISPLAY_NAMES.get(raw_provider.lower(), raw_provider)
+AttributeError: 'BotCommands' object has no attribute 'PROVIDER_DISPLAY_NAMES'
+
+NoneType: None
+
+NoneType: None
+
+NoneType: None
+
+NoneType: None
+
+NoneType: None
+
+NoneType: None
+
+NoneType: None
+
+NoneType: None
+
+NoneType: None
+
+NoneType: None
+
