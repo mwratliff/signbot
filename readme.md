@@ -149,3 +149,5 @@ Expanded dictionary support
 Video previews
 
 ASL practice tools
+
+# Discord for testing changes: https://discord.gg/mQTHCwnTRR
