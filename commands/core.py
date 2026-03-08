@@ -80,10 +80,17 @@ class Core(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
+        # If the command has its own local error handler, don't double-handle.
         if ctx.command and hasattr(ctx.command, "on_error"):
             return
 
         original = getattr(error, "original", error)
+
+        # ✅ Ignore unknown prefix/hybrid commands, including a bare "!"
+        if isinstance(original, commands.CommandNotFound):
+            return
+
+        # Only log real errors
         log_error()
 
         try:
@@ -100,8 +107,17 @@ class Core(commands.Cog):
             log_error()
 
     @commands.Cog.listener()
-    async def on_app_command_error(self, interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
+    async def on_app_command_error(
+            self,
+            interaction: discord.Interaction,
+            error: discord.app_commands.AppCommandError
+    ):
         original = getattr(error, "original", error)
+
+        # ✅ Ignore unknown slash/app commands (different exception type)
+        if isinstance(original, discord.app_commands.CommandNotFound):
+            return
+
         log_error()
 
         try:

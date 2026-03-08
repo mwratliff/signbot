@@ -34,7 +34,7 @@ intents.message_content = True
 # - SYNC_GLOBAL_COMMANDS=1 -> sync commands globally (needed for other servers to see /commands)
 # - NUKE_GLOBAL_COMMANDS=1 -> wipes ALL global commands (one-time cleanup if you had duplicates)
 SYNC_GLOBAL = os.getenv("SYNC_GLOBAL_COMMANDS", "0") == "1"
-NUKE_GLOBAL = os.getenv("NUKE_GLOBAL_COMMANDS", "0") == "1"
+NUKE_GLOBAL = os.getenv("NUKE_GLOBAL_COMMANDS", "1") == "1"
 
 
 class MyBot(commands.Bot):
@@ -71,6 +71,7 @@ bot = MyBot(
     intents=intents,
     help_command=None,
     application_id=APP_ID,
+    case_insensitive=True,
 )
 
 
