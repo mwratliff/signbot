@@ -9,8 +9,8 @@ import os
 import tempfile
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from typing import Dict, Iterable, Optional, Tuple
-from urllib.parse import urljoin, urlparse
+from typing import Dict, Iterable, Literal, Optional, Tuple
+from urllib.parse import quote, quote_plus, urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -44,6 +44,9 @@ PROVIDER_ORDER = [
     "signasl",
     "aslcore",
     "spreadthesign",
+    "tachyo",
+    "sldictionary",
+    "youglish",
 ]
 
 _PROVIDER_RANK = {name: idx for idx, name in enumerate(PROVIDER_ORDER)}
@@ -335,7 +338,7 @@ def perform_web_search(query: str) -> str:
     for obj in _iter_jsonl(LIFEPRINT_DICT_PATH):
         title = str(obj.get("title", "")).strip()
         url = str(obj.get("url", "")).strip()
-        if title and url and q in title.lower():
+        if title and url and _title_contains_query_start(title, q):
             results.append((title, url))
             if len(results) >= 5:
                 break
@@ -343,7 +346,7 @@ def perform_web_search(query: str) -> str:
     for obj in _iter_jsonl(HAND_SPEAK_DICT_PATH):
         title = str(obj.get("title", "")).strip()
         url = str(obj.get("url", "")).strip()
-        if title and url and q in title.lower():
+        if title and url and _title_contains_query_start(title, q):
             results.append((title, url))
             if len(results) >= 10:
                 break
@@ -363,7 +366,7 @@ def perform_web_search(query: str) -> str:
 
 async def search_aslcore(session, word: str):
     provider = "aslcore"
-    search_url = f"https://aslcore.org/search/?query={word}"
+    search_url = f"https://aslcore.org/search/?query={_format_query_for_provider(provider, word)}"
 
     try:
         async with session.get(search_url) as resp:
@@ -390,9 +393,22 @@ import re
 import json as _json
 
 
-def _normalize_title_for_exact_match(s: str) -> str:
+def _normalize_title(s: str) -> str:
     return " ".join((s or "").strip().lower().split())
 
+
+def _matches_title(title: str, query: str) -> bool:
+    query_norm = _normalize_title(query)
+
+    # Split title by slash
+    parts = title.split("/")
+
+    # Normalize and compare each part
+    for part in parts:
+        if _normalize_title(part) == query_norm:
+            return True
+
+    return False
 
 def _extract_youtube_video_renderers(obj):
     if isinstance(obj, dict):
@@ -411,7 +427,7 @@ async def search_lifeprint_youtube(session, word: str):
     if not query:
         return {"provider": provider, "word": word, "url": None, "found": False}
 
-    search_url = f"https://www.youtube.com/@aslu/search?query={query}"
+    search_url = f"https://www.youtube.com/@aslu/search?query={_format_query_for_provider(provider, query)}"
 
     try:
         async with session.get(search_url) as resp:
@@ -436,21 +452,19 @@ async def search_lifeprint_youtube(session, word: str):
                 _log_provider(provider, f"Failed to parse ytInitialData JSON -> {e}")
                 return {"provider": provider, "word": word, "url": None, "found": False}
 
-            target = _normalize_title_for_exact_match(query)
-
             for vr in _extract_youtube_video_renderers(data):
                 title_runs = (((vr.get("title") or {}).get("runs")) or [])
                 title = "".join(r.get("text", "") for r in title_runs).strip()
                 if not title:
                     continue
 
-                if _normalize_title_for_exact_match(title) == target:
+                if _matches_title(title, query):
                     video_id = vr.get("videoId")
                     if not video_id:
                         continue
 
                     video_url = f"https://www.youtube.com/watch?v={video_id}"
-                    _log_provider(provider, f"EXACT match -> {title} -> {video_url}")
+                    _log_provider(provider, f"MATCH -> {title} -> {video_url}")
                     return {"provider": provider, "word": word, "url": video_url, "found": True}
 
             _log_provider(provider, "No EXACT title matches found")
@@ -463,7 +477,7 @@ async def search_lifeprint_youtube(session, word: str):
 
 async def search_signingsavvy(session, word: str):
     provider = "signingsavvy"
-    url = f"https://www.signingsavvy.com/search/{word}"
+    url = f"https://www.signingsavvy.com/search/{_format_query_for_provider(provider, word)}"
 
     try:
         async with session.get(url) as resp:
@@ -492,7 +506,7 @@ async def search_signingsavvy(session, word: str):
 
 async def search_spreadthesign(session, word: str):
     provider = "spreadthesign"
-    search_url = f"https://www.spreadthesign.com/en.us/search/?q={word}"
+    search_url = f"https://www.spreadthesign.com/en.us/search/?q={_format_query_for_provider(provider, word)}"
 
     try:
         async with session.get(search_url) as resp:
@@ -549,7 +563,7 @@ async def search_spreadthesign(session, word: str):
 
 async def search_signasl(session, word: str):
     provider = "signasl"
-    search_url = f"https://www.signasl.org/sign/{word}"
+    search_url = f"https://www.signasl.org/sign/{_format_query_for_provider(provider, word)}"
 
     try:
         async with session.get(search_url) as resp:
@@ -598,6 +612,104 @@ async def search_signasl(session, word: str):
         return {"provider": provider, "word": word, "url": None, "found": False}
 
 
+async def search_tachyo(session, word: str):
+    provider = "tachyo"
+    query = _format_query_for_provider(provider, word)
+    search_url = f"https://www.tachyo.org/?q={query}"
+
+    try:
+        async with session.get(search_url) as resp:
+            text = await resp.text()
+            _log_provider(provider, f"URL={search_url} status={resp.status} bytes={len(text)}")
+
+            if resp.status != 200:
+                _log_provider(provider, "Non-200 -> no result")
+                return {"provider": provider, "word": word, "url": None, "found": False}
+
+            page_text = BeautifulSoup(text, "html.parser").get_text(" ", strip=True).lower()
+            if not page_text or _normalize_title(word) not in page_text:
+                _log_provider(provider, "No query text in reachable page -> no result")
+                return {"provider": provider, "word": word, "url": None, "found": False}
+
+            if any(p in page_text for p in ("not found", "no results", "no matches")):
+                _log_provider(provider, "Detected no-result phrase -> no result")
+                return {"provider": provider, "word": word, "url": None, "found": False}
+
+            _log_provider(provider, "Page reachable -> returning search URL")
+            return {"provider": provider, "word": word, "url": search_url, "found": True}
+
+    except Exception as e:
+        _log_provider(provider, f"ERROR: {e}")
+        return {"provider": provider, "word": word, "url": None, "found": False}
+
+
+async def search_sldictionary(session, word: str):
+    provider = "sldictionary"
+    direct_url = f"https://www.sldictionary.org/eng/dictionary/{_format_query_for_provider(provider, word)}"
+
+    try:
+        async with session.get(direct_url) as resp:
+            text = await resp.text()
+            _log_provider(provider, f"URL={direct_url} status={resp.status} bytes={len(text)}")
+
+            if resp.status != 200:
+                _log_provider(provider, "Non-200 -> no result")
+                return {"provider": provider, "word": word, "url": None, "found": False}
+
+            soup = BeautifulSoup(text, "html.parser")
+            page_text = soup.get_text(" ", strip=True).lower()
+
+            no_result_phrases = (
+                "no entries",
+                "not found",
+                "no results",
+                "no matches",
+                "advanced search tool",
+            )
+            if any(p in page_text for p in no_result_phrases):
+                _log_provider(provider, "Detected no-result phrase -> no result")
+                return {"provider": provider, "word": word, "url": None, "found": False}
+
+            _log_provider(provider, "Entry page reachable -> returning direct URL")
+            return {"provider": provider, "word": word, "url": direct_url, "found": True}
+
+    except Exception as e:
+        _log_provider(provider, f"ERROR: {e}")
+        return {"provider": provider, "word": word, "url": None, "found": False}
+
+
+async def search_youglish(session, word: str):
+    provider = "youglish"
+    search_url = f"https://youglish.com/pronounce/{_format_query_for_provider(provider, word)}/signlanguage/us"
+
+    try:
+        async with session.get(search_url) as resp:
+            text = await resp.text()
+            _log_provider(provider, f"URL={search_url} status={resp.status} bytes={len(text)}")
+
+            if resp.status != 200:
+                _log_provider(provider, "Non-200 -> no result")
+                return {"provider": provider, "word": word, "url": None, "found": False}
+
+            page_text = BeautifulSoup(text, "html.parser").get_text(" ", strip=True).lower()
+            no_result_phrases = (
+                "no results",
+                "no result",
+                "nothing found",
+                "no matches",
+                "try another search",
+            )
+            if any(p in page_text for p in no_result_phrases):
+                _log_provider(provider, "Detected no-result phrase -> no result")
+                return {"provider": provider, "word": word, "url": None, "found": False}
+
+            _log_provider(provider, "Page reachable -> returning search URL")
+            return {"provider": provider, "word": word, "url": search_url, "found": True}
+
+    except Exception as e:
+        _log_provider(provider, f"ERROR: {e}")
+        return {"provider": provider, "word": word, "url": None, "found": False}
+
 # =============================
 # Core Lookup Logic
 # =============================
@@ -606,29 +718,66 @@ def _normalize_word(word: str) -> str:
     return word.strip().lower().strip(string.punctuation)
 
 
+def _format_query_for_provider(provider: str, word: str) -> str:
+    normalized = _normalize_word(word)
+    provider = (provider or "").lower()
+
+    if provider == "signasl":
+        return quote("-".join(normalized.split()), safe="")
+
+    if provider == "signingsavvy":
+        return quote_plus(normalized)
+
+    if provider == "sldictionary":
+        return quote(normalized, safe="")
+
+    if provider == "youglish":
+        return quote(normalized, safe="")
+
+    if provider in {"aslcore", "lifeprint_youtube", "spreadthesign", "tachyo"}:
+        return quote_plus(normalized)
+
+    return quote(normalized, safe="")
+
+
+def _title_contains_query_start(title: str, query: str) -> bool:
+    query_norm = _normalize_title(query)
+    if not query_norm:
+        return False
+
+    escaped = re.escape(query_norm).replace(r"\ ", r"[\s/+\-_]+")
+    return re.search(rf"(?<![a-z0-9]){escaped}", _normalize_title(title)) is not None
+
+
 def lookup_local_word(word: str) -> Optional[Dict]:
     q = _normalize_word(word)
 
     for obj in _iter_jsonl(LIFEPRINT_DICT_PATH):
-        title = str(obj.get("title", "")).lower()
-        if q == title:
+        title = str(obj.get("title", ""))
+        if _matches_title(title, q):
             return {**obj, "source": "lifeprint"}
 
     for obj in _iter_jsonl(HAND_SPEAK_DICT_PATH):
-        title = str(obj.get("title", "")).lower()
-        if q == title:
+        title = str(obj.get("title", ""))
+        if _matches_title(title, q):
             return {**obj, "source": "handspeak"}
 
     for obj in _iter_jsonl(ON_DEMAND_DICT_PATH):
-        title = str(obj.get("title", "")).lower()
-        if q == title:
+        title = str(obj.get("title", ""))
+        if _matches_title(title, q):
             return obj
 
     return None
 
 
-async def search_all_providers(word: str) -> Dict[str, list[Dict]]:
+async def search_all_providers(
+    word: str,
+    *,
+    strict: Literal["broad", "exact"] = "broad",
+) -> Dict[str, list[Dict]]:
     q = _normalize_word(word)
+    if strict not in {"broad", "exact"}:
+        strict = "broad"
 
     results_exact: list[Dict] = []
     results_partial: list[Dict] = []
@@ -646,11 +795,10 @@ async def search_all_providers(word: str) -> Dict[str, list[Dict]]:
             if not title or not url or url in seen_urls:
                 continue
 
-            title_l = title.lower()
-            if q == title_l:
+            if _matches_title(title, q):
                 results_exact.append({"provider": provider, "title": title, "url": url})
                 seen_urls.add(url)
-            elif q in title_l:
+            elif strict == "broad" and _title_contains_query_start(title, q):
                 results_partial.append({"provider": provider, "title": title, "url": url})
                 seen_urls.add(url)
 
@@ -666,6 +814,9 @@ async def search_all_providers(word: str) -> Dict[str, list[Dict]]:
             search_signasl(session, q),
             search_aslcore(session, q),
             search_spreadthesign(session, q),
+            search_tachyo(session, q),
+            search_sldictionary(session, q),
+            search_youglish(session, q),
         ]
 
         # Only include YouTube if no local LifePrint match.
@@ -692,7 +843,11 @@ async def search_all_providers(word: str) -> Dict[str, list[Dict]]:
     return {"exact": results_exact, "partial": results_partial}
 
 
-async def lookup_or_fetch_word(word: str) -> Tuple[list[Dict], bool]:
+async def lookup_or_fetch_word(
+    word: str,
+    *,
+    strict: Literal["broad", "exact"] = "broad",
+) -> Tuple[list[Dict], bool]:
     """
     Used by !sign command.
     Powered by search_all_providers so ALL providers return results.
@@ -701,7 +856,7 @@ async def lookup_or_fetch_word(word: str) -> Tuple[list[Dict], bool]:
     if not normalized:
         return [], False
 
-    results_dict = await search_all_providers(normalized)
+    results_dict = await search_all_providers(normalized, strict=strict)
 
     results: list[Dict] = []
     seen_urls: set[str] = set()

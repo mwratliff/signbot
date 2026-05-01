@@ -13,6 +13,9 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 # Your personal/dev guild for fast command iteration + receiving reports
 DEV_GUILD_ID = os.getenv("DEV_GUILD_ID", "1469744304711930145")
 
+
+# Channel IDs for forums to post to.
+
 # Application ID MUST be an int (discord.py will choke on a string)
 APP_ID_RAW = os.getenv("DISCORD_APP_ID")
 APP_ID = int(APP_ID_RAW) if APP_ID_RAW else None
@@ -34,7 +37,7 @@ intents.message_content = True
 # - SYNC_GLOBAL_COMMANDS=1 -> sync commands globally (needed for other servers to see /commands)
 # - NUKE_GLOBAL_COMMANDS=1 -> wipes ALL global commands (one-time cleanup if you had duplicates)
 SYNC_GLOBAL = os.getenv("SYNC_GLOBAL_COMMANDS", "0") == "1"
-NUKE_GLOBAL = os.getenv("NUKE_GLOBAL_COMMANDS", "1") == "1"
+NUKE_GLOBAL = os.getenv("NUKE_GLOBAL_COMMANDS", "0") == "1"
 
 
 class MyBot(commands.Bot):
